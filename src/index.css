@@ -83,7 +83,6 @@ All colors MUST be HSL.
     --card-foreground: 0 0% 0%;
   }
 }
-}
 
 @layer base {
   * {
