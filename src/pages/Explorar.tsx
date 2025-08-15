@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,6 +18,7 @@ interface Molecule {
 }
 
 export const Explorar = () => {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedType, setSelectedType] = useState("all");
   const [selectedFunction, setSelectedFunction] = useState("all");
@@ -92,8 +94,7 @@ export const Explorar = () => {
   });
 
   const handleViewMolecule = (moleculeId: string) => {
-    console.log("Viewing molecule:", moleculeId);
-    // Implement 3D view functionality
+    navigate(`/molecula/${moleculeId}`);
   };
 
   const handleDownload = (moleculeId: string, format: string) => {
@@ -119,133 +120,165 @@ export const Explorar = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-6 py-8">
-        
-        {/* Search and Filters */}
-        <div className="mb-8 space-y-4">
-          <div className="flex flex-col md:flex-row gap-4">
-            {/* Search */}
-            <div className="relative flex-1">
-              <Input
-                type="text"
-                placeholder="Buscar por nome ou fórmula..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
-              />
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            </div>
-
-            {/* Type Filter */}
-            <Select value={selectedType} onValueChange={setSelectedType}>
-              <SelectTrigger className="w-full md:w-48">
-                <Filter className="w-4 h-4 mr-2" />
-                <SelectValue placeholder="Tipo de molécula" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todos os tipos</SelectItem>
-                {moleculeTypes.map(type => (
-                  <SelectItem key={type} value={type}>{type}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            {/* Function Filter */}
-            <Select value={selectedFunction} onValueChange={setSelectedFunction}>
-              <SelectTrigger className="w-full md:w-48">
-                <Filter className="w-4 h-4 mr-2" />
-                <SelectValue placeholder="Função biológica" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todas as funções</SelectItem>
-                {moleculeFunctions.map(func => (
-                  <SelectItem key={func} value={func}>{func}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Results count */}
-          <div className="text-sm text-muted-foreground">
-            Mostrando {filteredMolecules.length} de {molecules.length} moléculas
-          </div>
-        </div>
-
-        {/* Molecules Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredMolecules.map((molecule) => (
-            <Card key={molecule.id} className="group hover:shadow-lg transition-all duration-300">
+        <div className="flex gap-8">
+          {/* Sidebar Filters */}
+          <aside className="w-80 flex-shrink-0">
+            <Card>
               <CardHeader>
-                <div className="flex items-start justify-between mb-2">
-                  <div className="w-12 h-12 bg-biolente-green/20 rounded-full flex items-center justify-center">
-                    <Atom className="w-6 h-6 text-biolente-green-dark" />
-                  </div>
-                  <Badge variant="secondary">{molecule.type}</Badge>
-                </div>
-                
-                <CardTitle className="text-lg font-bold text-foreground group-hover:text-primary transition-colors">
-                  {molecule.name}
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Filter className="w-5 h-5" />
+                  Filtros
                 </CardTitle>
-                
-                <CardDescription>
-                  <span className="font-mono text-sm">{molecule.formula}</span>
-                </CardDescription>
               </CardHeader>
-
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-6">
+                {/* Search */}
                 <div>
-                  <Badge variant="outline" className="mb-2">
-                    {molecule.function}
-                  </Badge>
-                  <p className="text-sm text-muted-foreground">
-                    {molecule.description}
-                  </p>
+                  <label className="text-sm font-medium text-foreground mb-2 block">
+                    Buscar
+                  </label>
+                  <div className="relative">
+                    <Input
+                      type="text"
+                      placeholder="Nome ou fórmula..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="pl-10"
+                    />
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  </div>
                 </div>
 
-                {/* Action Buttons */}
-                <div className="flex flex-col space-y-2">
-                  <Button
-                    onClick={() => handleViewMolecule(molecule.id)}
-                    className="w-full"
-                  >
-                    <Eye className="w-4 h-4 mr-2" />
-                    Visualizar 3D
-                  </Button>
-                  
-                  <div className="flex flex-wrap gap-1">
-                    <span className="text-xs text-muted-foreground mr-2">Download:</span>
-                    {molecule.downloadFormats.map((format) => (
-                      <Button
-                        key={format}
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleDownload(molecule.id, format)}
-                        className="text-xs h-6 px-2"
-                      >
-                        <Download className="w-3 h-3 mr-1" />
-                        {format}
-                      </Button>
-                    ))}
-                  </div>
+                {/* Type Filter */}
+                <div>
+                  <label className="text-sm font-medium text-foreground mb-2 block">
+                    Tipo de Molécula
+                  </label>
+                  <Select value={selectedType} onValueChange={setSelectedType}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione o tipo" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Todos os tipos</SelectItem>
+                      {moleculeTypes.map(type => (
+                        <SelectItem key={type} value={type}>{type}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Function Filter */}
+                <div>
+                  <label className="text-sm font-medium text-foreground mb-2 block">
+                    Função Biológica
+                  </label>
+                  <Select value={selectedFunction} onValueChange={setSelectedFunction}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione a função" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Todas as funções</SelectItem>
+                      {moleculeFunctions.map(func => (
+                        <SelectItem key={func} value={func}>{func}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Results count */}
+                <div className="text-sm text-muted-foreground pt-4 border-t">
+                  {filteredMolecules.length} de {molecules.length} moléculas
                 </div>
               </CardContent>
             </Card>
-          ))}
-        </div>
+          </aside>
 
-        {/* No results */}
-        {filteredMolecules.length === 0 && (
-          <div className="text-center py-16">
-            <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
-              <Search className="w-8 h-8 text-muted-foreground" />
+          {/* Main Content */}
+          <main className="flex-1">
+            {/* Molecules Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+              {filteredMolecules.map((molecule) => (
+                <Card key={molecule.id} className="group hover:shadow-lg transition-all duration-300 cursor-pointer"
+                      onClick={() => handleViewMolecule(molecule.id)}>
+                  <CardHeader>
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="w-12 h-12 bg-biolente-green/20 rounded-full flex items-center justify-center">
+                        <Atom className="w-6 h-6 text-biolente-green-dark" />
+                      </div>
+                      <Badge variant="secondary">{molecule.type}</Badge>
+                    </div>
+                    
+                    <CardTitle className="text-lg font-bold text-foreground group-hover:text-primary transition-colors">
+                      {molecule.name}
+                    </CardTitle>
+                    
+                    <CardDescription>
+                      <span className="font-mono text-sm">{molecule.formula}</span>
+                    </CardDescription>
+                  </CardHeader>
+
+                  <CardContent className="space-y-4">
+                    <div>
+                      <Badge variant="outline" className="mb-2">
+                        {molecule.function}
+                      </Badge>
+                      <p className="text-sm text-muted-foreground">
+                        {molecule.description}
+                      </p>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="flex flex-col space-y-2">
+                      <Button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleViewMolecule(molecule.id);
+                        }}
+                        className="w-full"
+                      >
+                        <Eye className="w-4 h-4 mr-2" />
+                        Visualizar 3D
+                      </Button>
+                      
+                      <div className="flex flex-wrap gap-1">
+                        <span className="text-xs text-muted-foreground mr-2">Download:</span>
+                        {molecule.downloadFormats.map((format) => (
+                          <Button
+                            key={format}
+                            variant="outline"
+                            size="sm"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDownload(molecule.id, format);
+                            }}
+                            className="text-xs h-6 px-2"
+                          >
+                            <Download className="w-3 h-3 mr-1" />
+                            {format}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
-            <h3 className="text-lg font-semibold text-foreground mb-2">
-              Nenhuma molécula encontrada
-            </h3>
-            <p className="text-muted-foreground">
-              Tente ajustar os filtros ou termo de busca para encontrar moléculas.
-            </p>
-          </div>
-        )}
+
+            {/* No results */}
+            {filteredMolecules.length === 0 && (
+              <div className="text-center py-16">
+                <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Search className="w-8 h-8 text-muted-foreground" />
+                </div>
+                <h3 className="text-lg font-semibold text-foreground mb-2">
+                  Nenhuma molécula encontrada
+                </h3>
+                <p className="text-muted-foreground">
+                  Tente ajustar os filtros ou termo de busca para encontrar moléculas.
+                </p>
+              </div>
+            )}
+          </main>
+        </div>
       </div>
     </div>
   );
