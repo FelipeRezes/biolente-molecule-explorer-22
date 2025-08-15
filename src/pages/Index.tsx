@@ -1,12 +1,81 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from "react";
+import { Header } from "@/components/Header";
+import { HeroSection } from "@/components/HeroSection";
+import { HowItWorksSection } from "@/components/HowItWorksSection";
+import { AccessibilitySection } from "@/components/AccessibilitySection";
+import { Footer } from "@/components/Footer";
+import { Explorar } from "./Explorar";
+import { Visualizar } from "./Visualizar";
+import { Contribuir } from "./Contribuir";
+import { Contato } from "./Contato";
+import { Acessibilidade } from "./Acessibilidade";
 
 const Index = () => {
+  const [currentPage, setCurrentPage] = useState("home");
+
+  const handleNavigate = (page: string) => {
+    setCurrentPage(page);
+  };
+
+  if (currentPage === "explorar") {
+    return (
+      <>
+        <Header currentPage={currentPage} onNavigate={handleNavigate} />
+        <Explorar />
+        <Footer />
+      </>
+    );
+  }
+
+  if (currentPage === "visualizar") {
+    return (
+      <>
+        <Header currentPage={currentPage} onNavigate={handleNavigate} />
+        <Visualizar />
+        <Footer />
+      </>
+    );
+  }
+
+  if (currentPage === "contribua") {
+    return (
+      <>
+        <Header currentPage={currentPage} onNavigate={handleNavigate} />
+        <Contribuir />
+        <Footer />
+      </>
+    );
+  }
+
+  if (currentPage === "contato") {
+    return (
+      <>
+        <Header currentPage={currentPage} onNavigate={handleNavigate} />
+        <Contato />
+        <Footer />
+      </>
+    );
+  }
+
+  if (currentPage === "acessibilidade") {
+    return (
+      <>
+        <Header currentPage={currentPage} onNavigate={handleNavigate} />
+        <Acessibilidade />
+        <Footer />
+      </>
+    );
+  }
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen bg-background">
+      <Header currentPage={currentPage} onNavigate={handleNavigate} />
+      <main role="main">
+        <HeroSection />
+        <HowItWorksSection />
+        <AccessibilitySection />
+      </main>
+      <Footer />
     </div>
   );
 };

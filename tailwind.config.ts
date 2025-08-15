@@ -24,6 +24,16 @@ export default {
 				ring: 'hsl(var(--ring))',
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
+				
+				/* Biolente Brand Colors */
+				'biolente-blue': 'hsl(var(--biolente-blue))',
+				'biolente-blue-dark': 'hsl(var(--biolente-blue-dark))',
+				'biolente-yellow': 'hsl(var(--biolente-yellow))',
+				'biolente-yellow-dark': 'hsl(var(--biolente-yellow-dark))',
+				'biolente-green': 'hsl(var(--biolente-green))',
+				'biolente-green-dark': 'hsl(var(--biolente-green-dark))',
+				'biolente-molecule-blue': 'hsl(var(--biolente-molecule-blue))',
+				
 				primary: {
 					DEFAULT: 'hsl(var(--primary))',
 					foreground: 'hsl(var(--primary-foreground))'
