@@ -4,7 +4,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { ArrowLeft, Download, Atom, RotateCcw, ZoomIn, ZoomOut, Move3D } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { ArrowLeft, Download, Atom, RotateCcw, ZoomIn, ZoomOut, Move3D, Volume2, Maximize2 } from "lucide-react";
 
 interface Molecule {
   id: string;
@@ -184,6 +185,11 @@ export const MoleculaDetalhes = () => {
     // Implement download functionality
   };
 
+  const handleAudioDescription = (text: string) => {
+    console.log("Playing audio description:", text);
+    // Implement audio description functionality
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -217,18 +223,210 @@ export const MoleculaDetalhes = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-6 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* 3D Viewer */}
-          <div className="lg:col-span-2">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Left Side - Text Information */}
+          <div className="space-y-6">
+            {/* Description */}
+            <Card className="cursor-pointer hover:shadow-lg transition-shadow">
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle>Descrição da Molécula</CardTitle>
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleAudioDescription(molecule.description)}
+                  >
+                    <Volume2 className="w-4 h-4" />
+                  </Button>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" size="sm">
+                        <Maximize2 className="w-4 h-4" />
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                      <DialogHeader>
+                        <DialogTitle>Descrição Completa - {molecule.name}</DialogTitle>
+                      </DialogHeader>
+                      <div className="mt-4">
+                        <div className="flex justify-between items-start mb-4">
+                          <div>
+                            <span className="font-mono text-lg text-muted-foreground">{molecule.formula}</span>
+                            <div className="flex gap-2 mt-2">
+                              <Badge variant="secondary">{molecule.type}</Badge>
+                              <Badge variant="outline">{molecule.function}</Badge>
+                            </div>
+                          </div>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleAudioDescription(molecule.description)}
+                          >
+                            <Volume2 className="w-4 h-4 mr-2" />
+                            Ouvir
+                          </Button>
+                        </div>
+                        <p className="text-muted-foreground leading-relaxed text-base">
+                          {molecule.description}
+                        </p>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground leading-relaxed line-clamp-4">
+                  {molecule.description}
+                </p>
+              </CardContent>
+            </Card>
+
+            {/* Properties */}
+            {molecule.properties && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Propriedades Químicas</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Peso Molecular:</span>
+                    <span className="font-medium">{molecule.properties.molecularWeight}</span>
+                  </div>
+                  <Separator />
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Densidade:</span>
+                    <span className="font-medium">{molecule.properties.density}</span>
+                  </div>
+                  <Separator />
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Ponto de Fusão:</span>
+                    <span className="font-medium">{molecule.properties.meltingPoint}</span>
+                  </div>
+                  <Separator />
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Ponto de Ebulição:</span>
+                    <span className="font-medium">{molecule.properties.boilingPoint}</span>
+                  </div>
+                  <Separator />
+                  <div className="flex justify-between items-start">
+                    <span className="text-muted-foreground">Solubilidade:</span>
+                    <span className="font-medium text-right max-w-[60%]">{molecule.properties.solubility}</span>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Structural Info */}
+            {molecule.structure && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Informações Estruturais</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Átomos:</span>
+                    <span className="font-medium">{molecule.structure.atoms}</span>
+                  </div>
+                  <Separator />
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Ligações:</span>
+                    <span className="font-medium">{molecule.structure.bonds}</span>
+                  </div>
+                  <Separator />
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Anéis:</span>
+                    <span className="font-medium">{molecule.structure.rings}</span>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Downloads */}
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Move3D className="w-5 h-5" />
-                  Visualização 3D
-                </CardTitle>
+                <CardTitle>Downloads</CardTitle>
                 <CardDescription>
-                  Clique e arraste para rotacionar. Use a roda do mouse para zoom.
+                  Baixe a estrutura molecular em diferentes formatos
                 </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                {molecule.downloadFormats.map((format) => (
+                  <Button
+                    key={format}
+                    variant="outline"
+                    onClick={() => handleDownload(format)}
+                    className="w-full justify-start"
+                  >
+                    <Download className="w-4 h-4 mr-2" />
+                    Baixar {format}
+                  </Button>
+                ))}
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Right Side - 3D Viewer */}
+          <div className="space-y-6">
+            <Card className="cursor-pointer hover:shadow-lg transition-shadow">
+              <CardHeader className="flex flex-row items-center justify-between">
+                <div>
+                  <CardTitle className="flex items-center gap-2">
+                    <Move3D className="w-5 h-5" />
+                    Visualização 3D
+                  </CardTitle>
+                  <CardDescription>
+                    Clique e arraste para rotacionar. Use a roda do mouse para zoom.
+                  </CardDescription>
+                </div>
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleAudioDescription(`Visualização 3D da molécula ${molecule.name}. Esta molécula possui ${molecule.structure?.atoms} átomos e ${molecule.structure?.bonds} ligações químicas.`)}
+                  >
+                    <Volume2 className="w-4 h-4" />
+                  </Button>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" size="sm">
+                        <Maximize2 className="w-4 h-4" />
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden">
+                      <DialogHeader>
+                        <DialogTitle>Visualização 3D - {molecule.name}</DialogTitle>
+                      </DialogHeader>
+                      <div className="mt-4">
+                        <div className="flex justify-between items-center mb-4">
+                          <div className="text-sm text-muted-foreground">
+                            Visualização ampliada da estrutura molecular
+                          </div>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleAudioDescription(`Visualização 3D ampliada da molécula ${molecule.name}. Esta molécula possui ${molecule.structure?.atoms} átomos e ${molecule.structure?.bonds} ligações químicas.`)}
+                          >
+                            <Volume2 className="w-4 h-4 mr-2" />
+                            Audiodescrição
+                          </Button>
+                        </div>
+                        <div className="aspect-video bg-gradient-to-br from-biolente-blue/10 to-biolente-green/10 rounded-lg border-2 border-dashed border-muted-foreground/20 flex items-center justify-center relative overflow-hidden">
+                          <div className="text-center">
+                            <div className="w-32 h-32 bg-biolente-green/20 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
+                              <Atom className="w-16 h-16 text-biolente-green-dark animate-spin" style={{ animationDuration: '4s' }} />
+                            </div>
+                            <p className="text-muted-foreground text-lg">
+                              Visualizador 3D da molécula será implementado aqui
+                            </p>
+                            <p className="text-sm text-muted-foreground mt-2">
+                              Use Three.js ou similar para visualização interativa
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                </div>
               </CardHeader>
               <CardContent>
                 {/* 3D Viewer Placeholder */}
@@ -263,104 +461,6 @@ export const MoleculaDetalhes = () => {
                 </div>
               </CardContent>
             </Card>
-          </div>
-
-          {/* Information Panel */}
-          <div className="space-y-6">
-            {/* Description */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Descrição</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground leading-relaxed">
-                  {molecule.description}
-                </p>
-              </CardContent>
-            </Card>
-
-            {/* Downloads */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Downloads</CardTitle>
-                <CardDescription>
-                  Baixe a estrutura molecular em diferentes formatos
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                {molecule.downloadFormats.map((format) => (
-                  <Button
-                    key={format}
-                    variant="outline"
-                    onClick={() => handleDownload(format)}
-                    className="w-full justify-start"
-                  >
-                    <Download className="w-4 h-4 mr-2" />
-                    Baixar {format}
-                  </Button>
-                ))}
-              </CardContent>
-            </Card>
-
-            {/* Structural Info */}
-            {molecule.structure && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Informações Estruturais</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Átomos:</span>
-                    <span className="font-medium">{molecule.structure.atoms}</span>
-                  </div>
-                  <Separator />
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Ligações:</span>
-                    <span className="font-medium">{molecule.structure.bonds}</span>
-                  </div>
-                  <Separator />
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Anéis:</span>
-                    <span className="font-medium">{molecule.structure.rings}</span>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Properties */}
-            {molecule.properties && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Propriedades Químicas</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Peso Molecular:</span>
-                    <span className="font-medium text-right">{molecule.properties.molecularWeight}</span>
-                  </div>
-                  <Separator />
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Densidade:</span>
-                    <span className="font-medium">{molecule.properties.density}</span>
-                  </div>
-                  <Separator />
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Ponto de Fusão:</span>
-                    <span className="font-medium">{molecule.properties.meltingPoint}</span>
-                  </div>
-                  <Separator />
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Ponto de Ebulição:</span>
-                    <span className="font-medium">{molecule.properties.boilingPoint}</span>
-                  </div>
-                  <Separator />
-                  <div className="flex justify-between items-start">
-                    <span className="text-muted-foreground">Solubilidade:</span>
-                    <span className="font-medium text-right max-w-[60%]">{molecule.properties.solubility}</span>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
           </div>
         </div>
       </div>
