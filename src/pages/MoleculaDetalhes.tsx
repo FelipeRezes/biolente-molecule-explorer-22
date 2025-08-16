@@ -223,18 +223,18 @@ export const MoleculaDetalhes = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-6 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
           {/* Left Side - Text Information */}
-          <div className="space-y-6">
-            {/* Description */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Combined Information Card */}
             <Card className="cursor-pointer hover:shadow-lg transition-shadow">
               <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>Descrição da Molécula</CardTitle>
+                <CardTitle>Informações da Molécula</CardTitle>
                 <div className="flex gap-2">
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => handleAudioDescription(molecule.description)}
+                    onClick={() => handleAudioDescription(`${molecule.description}. Propriedades: peso molecular ${molecule.properties?.molecularWeight}, densidade ${molecule.properties?.density}.`)}
                   >
                     <Volume2 className="w-4 h-4" />
                   </Button>
@@ -244,11 +244,11 @@ export const MoleculaDetalhes = () => {
                         <Maximize2 className="w-4 h-4" />
                       </Button>
                     </DialogTrigger>
-                    <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                    <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
                       <DialogHeader>
-                        <DialogTitle>Descrição Completa - {molecule.name}</DialogTitle>
+                        <DialogTitle>Informações Completas - {molecule.name}</DialogTitle>
                       </DialogHeader>
-                      <div className="mt-4">
+                      <div className="mt-4 space-y-6">
                         <div className="flex justify-between items-start mb-4">
                           <div>
                             <span className="font-mono text-lg text-muted-foreground">{molecule.formula}</span>
@@ -260,86 +260,104 @@ export const MoleculaDetalhes = () => {
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => handleAudioDescription(molecule.description)}
+                            onClick={() => handleAudioDescription(`${molecule.description}. Propriedades: peso molecular ${molecule.properties?.molecularWeight}, densidade ${molecule.properties?.density}.`)}
                           >
                             <Volume2 className="w-4 h-4 mr-2" />
-                            Ouvir
+                            Ouvir Tudo
                           </Button>
                         </div>
-                        <p className="text-muted-foreground leading-relaxed text-base">
-                          {molecule.description}
-                        </p>
+                        
+                        {/* Description */}
+                        <div>
+                          <h3 className="text-lg font-semibold mb-3">Descrição</h3>
+                          <p className="text-muted-foreground leading-relaxed text-base">
+                            {molecule.description}
+                          </p>
+                        </div>
+
+                        {/* Properties */}
+                        {molecule.properties && (
+                          <div>
+                            <h3 className="text-lg font-semibold mb-3">Propriedades Químicas</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div className="space-y-3">
+                                <div className="flex justify-between">
+                                  <span className="text-muted-foreground">Peso Molecular:</span>
+                                  <span className="font-medium">{molecule.properties.molecularWeight}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span className="text-muted-foreground">Densidade:</span>
+                                  <span className="font-medium">{molecule.properties.density}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span className="text-muted-foreground">Ponto de Fusão:</span>
+                                  <span className="font-medium">{molecule.properties.meltingPoint}</span>
+                                </div>
+                              </div>
+                              <div className="space-y-3">
+                                <div className="flex justify-between">
+                                  <span className="text-muted-foreground">Ponto de Ebulição:</span>
+                                  <span className="font-medium">{molecule.properties.boilingPoint}</span>
+                                </div>
+                                <div className="flex justify-between items-start">
+                                  <span className="text-muted-foreground">Solubilidade:</span>
+                                  <span className="font-medium text-right">{molecule.properties.solubility}</span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Structural Info */}
+                        {molecule.structure && (
+                          <div>
+                            <h3 className="text-lg font-semibold mb-3">Informações Estruturais</h3>
+                            <div className="grid grid-cols-3 gap-4">
+                              <div className="text-center p-4 bg-muted/50 rounded-lg">
+                                <div className="text-2xl font-bold text-primary">{molecule.structure.atoms}</div>
+                                <div className="text-sm text-muted-foreground">Átomos</div>
+                              </div>
+                              <div className="text-center p-4 bg-muted/50 rounded-lg">
+                                <div className="text-2xl font-bold text-primary">{molecule.structure.bonds}</div>
+                                <div className="text-sm text-muted-foreground">Ligações</div>
+                              </div>
+                              <div className="text-center p-4 bg-muted/50 rounded-lg">
+                                <div className="text-2xl font-bold text-primary">{molecule.structure.rings}</div>
+                                <div className="text-sm text-muted-foreground">Anéis</div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </DialogContent>
                   </Dialog>
                 </div>
               </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground leading-relaxed line-clamp-4">
-                  {molecule.description}
-                </p>
+              <CardContent className="space-y-4">
+                <div>
+                  <h4 className="font-medium mb-2">Descrição</h4>
+                  <p className="text-muted-foreground leading-relaxed line-clamp-3 text-sm">
+                    {molecule.description}
+                  </p>
+                </div>
+                
+                {molecule.properties && (
+                  <div>
+                    <h4 className="font-medium mb-2">Propriedades Principais</h4>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Peso Molecular:</span>
+                        <span className="font-medium">{molecule.properties.molecularWeight}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Densidade:</span>
+                        <span className="font-medium">{molecule.properties.density}</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
-
-            {/* Properties */}
-            {molecule.properties && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Propriedades Químicas</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Peso Molecular:</span>
-                    <span className="font-medium">{molecule.properties.molecularWeight}</span>
-                  </div>
-                  <Separator />
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Densidade:</span>
-                    <span className="font-medium">{molecule.properties.density}</span>
-                  </div>
-                  <Separator />
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Ponto de Fusão:</span>
-                    <span className="font-medium">{molecule.properties.meltingPoint}</span>
-                  </div>
-                  <Separator />
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Ponto de Ebulição:</span>
-                    <span className="font-medium">{molecule.properties.boilingPoint}</span>
-                  </div>
-                  <Separator />
-                  <div className="flex justify-between items-start">
-                    <span className="text-muted-foreground">Solubilidade:</span>
-                    <span className="font-medium text-right max-w-[60%]">{molecule.properties.solubility}</span>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Structural Info */}
-            {molecule.structure && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Informações Estruturais</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Átomos:</span>
-                    <span className="font-medium">{molecule.structure.atoms}</span>
-                  </div>
-                  <Separator />
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Ligações:</span>
-                    <span className="font-medium">{molecule.structure.bonds}</span>
-                  </div>
-                  <Separator />
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Anéis:</span>
-                    <span className="font-medium">{molecule.structure.rings}</span>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
 
             {/* Downloads */}
             <Card>
@@ -366,7 +384,7 @@ export const MoleculaDetalhes = () => {
           </div>
 
           {/* Right Side - 3D Viewer */}
-          <div className="space-y-6">
+          <div className="lg:col-span-3 space-y-6">
             <Card className="cursor-pointer hover:shadow-lg transition-shadow">
               <CardHeader className="flex flex-row items-center justify-between">
                 <div>
