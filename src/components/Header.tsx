@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Search, Eye } from "lucide-react";
+import { Search, Eye, Volume2 } from "lucide-react";
 import { useState, useEffect } from "react";
 
 interface HeaderProps {
@@ -9,10 +9,11 @@ interface HeaderProps {
 
 export const Header = ({ currentPage = "home", onNavigate }: HeaderProps) => {
   const [isHighContrast, setIsHighContrast] = useState(false);
+  const [isAudioMode, setIsAudioMode] = useState(false);
 
   useEffect(() => {
-    // Focus on high contrast button first for accessibility
-    const button = document.getElementById('high-contrast-btn');
+    // Focus on accessibility button first for accessibility
+    const button = document.getElementById('accessibility-btn');
     if (button) {
       button.focus();
     }
@@ -27,6 +28,26 @@ export const Header = ({ currentPage = "home", onNavigate }: HeaderProps) => {
     }
   };
 
+  const handleAudioDescription = () => {
+    // Implementar audiodescrição da página
+    console.log('Iniciando audiodescrição da página');
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Tab' && !e.shiftKey) {
+      e.preventDefault();
+      setIsAudioMode(!isAudioMode);
+    }
+  };
+
+  const handleButtonClick = () => {
+    if (isAudioMode) {
+      handleAudioDescription();
+    } else {
+      toggleHighContrast();
+    }
+  };
+
   const menuItems = [
     { id: 'home', label: 'HOME' },
     { id: 'explorar', label: 'EXPLORAR' },
@@ -36,16 +57,32 @@ export const Header = ({ currentPage = "home", onNavigate }: HeaderProps) => {
 
   return (
     <header className="w-full bg-biolente-blue shadow-sm">
-      {/* High Contrast Button - First in tab order */}
+      {/* Accessibility Button - First in tab order */}
       <div className="w-full flex justify-center py-2">
         <Button
-          id="high-contrast-btn"
-          onClick={toggleHighContrast}
+          id="accessibility-btn"
+          onClick={handleButtonClick}
+          onKeyDown={handleKeyDown}
           className="bg-biolente-yellow hover:bg-biolente-yellow-dark text-foreground font-bold px-6 py-2 rounded-md transition-colors"
-          aria-label={isHighContrast ? "Desativar alto contraste" : "Ativar alto contraste"}
+          aria-label={
+            isAudioMode 
+              ? "Audiodescrição da página" 
+              : isHighContrast 
+                ? "Desativar alto contraste" 
+                : "Ativar alto contraste"
+          }
         >
-          <Eye className="w-4 h-4 mr-2" />
-          {isHighContrast ? "DESATIVAR ALTO CONTRASTE" : "ATIVAR ALTO CONTRASTE"}
+          {isAudioMode ? (
+            <>
+              <Volume2 className="w-4 h-4 mr-2" />
+              AUDIODESCRIÇÃO DA PÁGINA
+            </>
+          ) : (
+            <>
+              <Eye className="w-4 h-4 mr-2" />
+              {isHighContrast ? "DESATIVAR ALTO CONTRASTE" : "ATIVAR ALTO CONTRASTE"}
+            </>
+          )}
         </Button>
       </div>
 
