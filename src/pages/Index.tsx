@@ -57,6 +57,22 @@ const Index = () => {
     );
   }
 
+  if (currentPage === "exportar") {
+    return (
+      <>
+        <Header currentPage={currentPage} onNavigate={handleNavigate} />
+        <div className="min-h-screen">
+          <iframe 
+            src="/exportar" 
+            className="w-full h-screen border-0"
+            title="Exportar Molécula"
+          />
+        </div>
+        <Footer />
+      </>
+    );
+  }
+
   if (currentPage === "acessibilidade") {
     return (
       <>
