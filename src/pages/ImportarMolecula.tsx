@@ -1,7 +1,6 @@
 import { useState, useRef } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, PerspectiveCamera, Environment } from "@react-three/drei";
-import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -161,7 +160,6 @@ export const ImportarMolecula = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-foreground mb-4">
@@ -304,10 +302,151 @@ export const ImportarMolecula = () => {
                         <DialogHeader>
                           <DialogTitle>Visualizador 3D - Tela Cheia</DialogTitle>
                         </DialogHeader>
-                        <div className="flex-1 rounded-lg overflow-hidden">
+                        <div className="flex-1 rounded-lg overflow-hidden relative">
+                          {/* Barra de Controles na Tela Cheia */}
+                          <div className="absolute top-4 left-4 right-4 z-10 bg-background/95 backdrop-blur-sm border rounded-lg shadow-lg">
+                            <div className="p-4">
+                              <div className="flex flex-wrap items-center gap-4">
+                                {/* Modo de Visualização */}
+                                <div className="flex items-center gap-2">
+                                  <Label className="text-sm whitespace-nowrap">Estilo:</Label>
+                                  <Select value={visualizationMode} onValueChange={setVisualizationMode}>
+                                    <SelectTrigger className="w-32">
+                                      <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="ballstick">Ball & Stick</SelectItem>
+                                      <SelectItem value="spacefill">Space Fill</SelectItem>
+                                      <SelectItem value="wireframe">Wireframe</SelectItem>
+                                      <SelectItem value="cartoon">Cartoon</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+
+                                <Separator orientation="vertical" className="h-6" />
+
+                                {/* Esquema de Cores */}
+                                <div className="flex items-center gap-2">
+                                  <Label className="text-sm whitespace-nowrap">Cores:</Label>
+                                  <Select value={colorScheme} onValueChange={setColorScheme}>
+                                    <SelectTrigger className="w-32">
+                                      <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="cpk">CPK</SelectItem>
+                                      <SelectItem value="element">Por Elemento</SelectItem>
+                                      <SelectItem value="rainbow">Rainbow</SelectItem>
+                                      <SelectItem value="custom">Personalizado</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+
+                                <Separator orientation="vertical" className="h-6" />
+
+                                {/* Cor de Fundo */}
+                                <div className="flex items-center gap-2">
+                                  <Label className="text-sm whitespace-nowrap">Fundo:</Label>
+                                  <Input
+                                    type="color"
+                                    value={backgroundColor}
+                                    onChange={(e) => setBackgroundColor(e.target.value)}
+                                    className="w-12 h-8 p-1 cursor-pointer"
+                                  />
+                                </div>
+
+                                <Separator orientation="vertical" className="h-6" />
+
+                                {/* Configurações de Acessibilidade */}
+                                <div className="flex items-center gap-2">
+                                  <Label className="text-sm whitespace-nowrap">Alto Contraste:</Label>
+                                  <Switch
+                                    checked={highContrast}
+                                    onCheckedChange={setHighContrast}
+                                  />
+                                </div>
+
+                                <div className="flex items-center gap-2">
+                                  <Label className="text-sm whitespace-nowrap">Daltonismo:</Label>
+                                  <Select value={colorBlindMode} onValueChange={setColorBlindMode}>
+                                    <SelectTrigger className="w-32">
+                                      <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="none">Nenhum</SelectItem>
+                                      <SelectItem value="protanopia">Protanopia</SelectItem>
+                                      <SelectItem value="deuteranopia">Deuteranopia</SelectItem>
+                                      <SelectItem value="tritanopia">Tritanopia</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+
+                                <div className="ml-auto flex items-center gap-2">
+                                  {/* Botões de Ação */}
+                                  <Button onClick={toggleAnimation} size="sm" variant="outline">
+                                    {isAnimating ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+                                  </Button>
+                                  <Button onClick={handleReset} size="sm" variant="outline">
+                                    <RotateCcw className="h-4 w-4" />
+                                  </Button>
+                                  <Button onClick={handleExport} size="sm">
+                                    <Download className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                              </div>
+
+                              {/* Controles Avançados (Segunda Linha) */}
+                              <div className="flex flex-wrap items-center gap-6 mt-4 pt-4 border-t">
+                                <div className="flex items-center gap-2">
+                                  <Label className="text-sm whitespace-nowrap">Tamanho Átomos:</Label>
+                                  <div className="w-24">
+                                    <Slider
+                                      value={atomSize}
+                                      onValueChange={setAtomSize}
+                                      max={1}
+                                      min={0.1}
+                                      step={0.1}
+                                      className="w-full"
+                                    />
+                                  </div>
+                                  <span className="text-xs text-muted-foreground w-8">{atomSize[0]}</span>
+                                </div>
+
+                                <div className="flex items-center gap-2">
+                                  <Label className="text-sm whitespace-nowrap">Ligações:</Label>
+                                  <div className="w-24">
+                                    <Slider
+                                      value={bondSize}
+                                      onValueChange={setBondSize}
+                                      max={0.3}
+                                      min={0.05}
+                                      step={0.05}
+                                      className="w-full"
+                                    />
+                                  </div>
+                                  <span className="text-xs text-muted-foreground w-8">{bondSize[0]}</span>
+                                </div>
+
+                                <div className="flex items-center gap-2">
+                                  <Label className="text-sm whitespace-nowrap">Opacidade:</Label>
+                                  <div className="w-24">
+                                    <Slider
+                                      value={opacity}
+                                      onValueChange={setOpacity}
+                                      max={1}
+                                      min={0.1}
+                                      step={0.1}
+                                      className="w-full"
+                                    />
+                                  </div>
+                                  <span className="text-xs text-muted-foreground w-8">{Math.round(opacity[0] * 100)}%</span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
                           <Canvas style={{ background: backgroundColor }}>
                             <PerspectiveCamera makeDefault position={[5, 5, 5]} />
-                            <OrbitControls enablePan enableZoom enableRotate />
+                            <OrbitControls enablePan enableZoom enableRotate autoRotate={isAnimating} />
                             <ambientLight intensity={0.6} />
                             <directionalLight position={[10, 10, 5]} intensity={1} />
                             <Environment preset="studio" />
