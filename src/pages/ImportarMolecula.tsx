@@ -172,275 +172,248 @@ export const ImportarMolecula = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Painel de Controles */}
-          <div className="lg:col-span-1 space-y-6">
-            {/* Upload de Arquivo */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Upload className="h-5 w-5" />
-                  Importar Arquivo
-                </CardTitle>
-                <CardDescription>
-                  Formatos suportados: PDB, SDF, MOL, XYZ, CIF
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <Input
-                    type="file"
-                    accept=".pdb,.sdf,.mol,.xyz,.cif"
-                    onChange={handleFileUpload}
-                    className="cursor-pointer"
-                  />
-                  {file && (
-                    <div className="p-3 bg-muted rounded-lg">
-                      <p className="font-medium">{file.name}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {(file.size / 1024).toFixed(2)} KB
-                      </p>
-                    </div>
-                  )}
+        {/* Upload de Arquivo */}
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Upload className="h-5 w-5" />
+              Importar Arquivo
+            </CardTitle>
+            <CardDescription>
+              Formatos suportados: PDB, SDF, MOL, XYZ, CIF
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center gap-4">
+              <Input
+                type="file"
+                accept=".pdb,.sdf,.mol,.xyz,.cif"
+                onChange={handleFileUpload}
+                className="cursor-pointer flex-1"
+              />
+              {file && (
+                <div className="flex items-center gap-2 px-3 py-2 bg-muted rounded-lg">
+                  <Badge variant="secondary">{file.name}</Badge>
+                  <span className="text-sm text-muted-foreground">
+                    {(file.size / 1024).toFixed(2)} KB
+                  </span>
                 </div>
-              </CardContent>
-            </Card>
+              )}
+            </div>
+          </CardContent>
+        </Card>
 
-            {/* Configurações de Visualização */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Modo de Visualização</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <Label htmlFor="visualization-mode">Estilo</Label>
-                  <Select value={visualizationMode} onValueChange={setVisualizationMode}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="ballstick">Ball & Stick</SelectItem>
-                      <SelectItem value="spacefill">Space Fill</SelectItem>
-                      <SelectItem value="wireframe">Wireframe</SelectItem>
-                      <SelectItem value="cartoon">Cartoon</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div>
-                  <Label htmlFor="color-scheme">Esquema de Cores</Label>
-                  <Select value={colorScheme} onValueChange={setColorScheme}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="cpk">CPK</SelectItem>
-                      <SelectItem value="element">Por Elemento</SelectItem>
-                      <SelectItem value="rainbow">Rainbow</SelectItem>
-                      <SelectItem value="custom">Personalizado</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div>
-                  <Label htmlFor="background-color">Cor de Fundo</Label>
-                  <Input
-                    type="color"
-                    value={backgroundColor}
-                    onChange={(e) => setBackgroundColor(e.target.value)}
-                    className="h-10"
-                  />
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Configurações de Acessibilidade */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Acessibilidade</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="high-contrast">Alto Contraste</Label>
-                  <Switch
-                    id="high-contrast"
-                    checked={highContrast}
-                    onCheckedChange={setHighContrast}
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="colorblind-mode">Modo Daltônico</Label>
-                  <Select value={colorBlindMode} onValueChange={setColorBlindMode}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="none">Nenhum</SelectItem>
-                      <SelectItem value="protanopia">Protanopia</SelectItem>
-                      <SelectItem value="deuteranopia">Deuteranopia</SelectItem>
-                      <SelectItem value="tritanopia">Tritanopia</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Configurações Avançadas */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Configurações Avançadas</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div>
-                  <Label>Tamanho dos Átomos: {atomSize[0]}</Label>
-                  <Slider
-                    value={atomSize}
-                    onValueChange={setAtomSize}
-                    max={1}
-                    min={0.1}
-                    step={0.1}
-                    className="mt-2"
-                  />
-                </div>
-
-                <div>
-                  <Label>Espessura das Ligações: {bondSize[0]}</Label>
-                  <Slider
-                    value={bondSize}
-                    onValueChange={setBondSize}
-                    max={0.3}
-                    min={0.05}
-                    step={0.05}
-                    className="mt-2"
-                  />
-                </div>
-
-                <div>
-                  <Label>Opacidade: {Math.round(opacity[0] * 100)}%</Label>
-                  <Slider
-                    value={opacity}
-                    onValueChange={setOpacity}
-                    max={1}
-                    min={0.1}
-                    step={0.1}
-                    className="mt-2"
-                  />
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Controles de Ação */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Ações</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <Button onClick={toggleAnimation} className="w-full" variant="outline">
-                  {isAnimating ? (
-                    <>
-                      <Pause className="h-4 w-4 mr-2" />
-                      Pausar Rotação
-                    </>
-                  ) : (
-                    <>
-                      <Play className="h-4 w-4 mr-2" />
-                      Iniciar Rotação
-                    </>
-                  )}
-                </Button>
-                <Button onClick={handleReset} className="w-full" variant="outline">
-                  <RotateCcw className="h-4 w-4 mr-2" />
-                  Resetar Configurações
-                </Button>
-                <Button onClick={handleExport} className="w-full">
-                  <Download className="h-4 w-4 mr-2" />
-                  Exportar Imagem
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Visualizador 3D */}
-          <div className="lg:col-span-2">
-            <Card className="h-[800px]">
-              <CardHeader className="pb-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle>Visualizador 3D</CardTitle>
-                    <CardDescription>
-                      {file ? `Visualizando: ${file.name}` : 'Carregue um arquivo para começar'}
-                    </CardDescription>
+        {/* Visualizador 3D com Controles Integrados */}
+        <Card className="h-[800px]">
+          <CardContent className="p-0 h-full relative">
+            {/* Barra de Controles Integrada */}
+            <div className="absolute top-4 left-4 right-4 z-10 bg-background/95 backdrop-blur-sm border rounded-lg shadow-lg">
+              <div className="p-4">
+                <div className="flex flex-wrap items-center gap-4">
+                  {/* Modo de Visualização */}
+                  <div className="flex items-center gap-2">
+                    <Label className="text-sm whitespace-nowrap">Estilo:</Label>
+                    <Select value={visualizationMode} onValueChange={setVisualizationMode}>
+                      <SelectTrigger className="w-32">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="ballstick">Ball & Stick</SelectItem>
+                        <SelectItem value="spacefill">Space Fill</SelectItem>
+                        <SelectItem value="wireframe">Wireframe</SelectItem>
+                        <SelectItem value="cartoon">Cartoon</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
-                  <Dialog open={isFullscreen} onOpenChange={setIsFullscreen}>
-                    <DialogTrigger asChild>
-                      <Button variant="outline" size="icon">
-                        <Maximize2 className="h-4 w-4" />
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-7xl h-[90vh]">
-                      <DialogHeader>
-                        <DialogTitle>Visualizador 3D - Tela Cheia</DialogTitle>
-                      </DialogHeader>
-                      <div className="flex-1 rounded-lg overflow-hidden">
-                        <Canvas style={{ background: backgroundColor }}>
-                          <PerspectiveCamera makeDefault position={[5, 5, 5]} />
-                          <OrbitControls enablePan enableZoom enableRotate />
-                          <ambientLight intensity={0.6} />
-                          <directionalLight position={[10, 10, 5]} intensity={1} />
-                          <Environment preset="studio" />
-                          {file && (
-                            <MoleculeViewer
-                              colorScheme={colorScheme}
-                              visualizationMode={visualizationMode}
-                              atomSize={atomSize[0]}
-                              bondSize={bondSize[0]}
-                              opacity={opacity[0]}
-                              highContrast={highContrast}
-                              colorBlindMode={colorBlindMode}
-                              backgroundColor={backgroundColor}
-                            />
-                          )}
-                        </Canvas>
-                      </div>
-                    </DialogContent>
-                  </Dialog>
+
+                  <Separator orientation="vertical" className="h-6" />
+
+                  {/* Esquema de Cores */}
+                  <div className="flex items-center gap-2">
+                    <Label className="text-sm whitespace-nowrap">Cores:</Label>
+                    <Select value={colorScheme} onValueChange={setColorScheme}>
+                      <SelectTrigger className="w-32">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="cpk">CPK</SelectItem>
+                        <SelectItem value="element">Por Elemento</SelectItem>
+                        <SelectItem value="rainbow">Rainbow</SelectItem>
+                        <SelectItem value="custom">Personalizado</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <Separator orientation="vertical" className="h-6" />
+
+                  {/* Cor de Fundo */}
+                  <div className="flex items-center gap-2">
+                    <Label className="text-sm whitespace-nowrap">Fundo:</Label>
+                    <Input
+                      type="color"
+                      value={backgroundColor}
+                      onChange={(e) => setBackgroundColor(e.target.value)}
+                      className="w-12 h-8 p-1 cursor-pointer"
+                    />
+                  </div>
+
+                  <Separator orientation="vertical" className="h-6" />
+
+                  {/* Configurações de Acessibilidade */}
+                  <div className="flex items-center gap-2">
+                    <Label className="text-sm whitespace-nowrap">Alto Contraste:</Label>
+                    <Switch
+                      checked={highContrast}
+                      onCheckedChange={setHighContrast}
+                    />
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <Label className="text-sm whitespace-nowrap">Daltonismo:</Label>
+                    <Select value={colorBlindMode} onValueChange={setColorBlindMode}>
+                      <SelectTrigger className="w-32">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="none">Nenhum</SelectItem>
+                        <SelectItem value="protanopia">Protanopia</SelectItem>
+                        <SelectItem value="deuteranopia">Deuteranopia</SelectItem>
+                        <SelectItem value="tritanopia">Tritanopia</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="ml-auto flex items-center gap-2">
+                    {/* Botões de Ação */}
+                    <Button onClick={toggleAnimation} size="sm" variant="outline">
+                      {isAnimating ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+                    </Button>
+                    <Button onClick={handleReset} size="sm" variant="outline">
+                      <RotateCcw className="h-4 w-4" />
+                    </Button>
+                    <Button onClick={handleExport} size="sm">
+                      <Download className="h-4 w-4" />
+                    </Button>
+                    <Dialog open={isFullscreen} onOpenChange={setIsFullscreen}>
+                      <DialogTrigger asChild>
+                        <Button size="sm" variant="outline">
+                          <Maximize2 className="h-4 w-4" />
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="max-w-7xl h-[90vh]">
+                        <DialogHeader>
+                          <DialogTitle>Visualizador 3D - Tela Cheia</DialogTitle>
+                        </DialogHeader>
+                        <div className="flex-1 rounded-lg overflow-hidden">
+                          <Canvas style={{ background: backgroundColor }}>
+                            <PerspectiveCamera makeDefault position={[5, 5, 5]} />
+                            <OrbitControls enablePan enableZoom enableRotate />
+                            <ambientLight intensity={0.6} />
+                            <directionalLight position={[10, 10, 5]} intensity={1} />
+                            <Environment preset="studio" />
+                            {file && (
+                              <MoleculeViewer
+                                colorScheme={colorScheme}
+                                visualizationMode={visualizationMode}
+                                atomSize={atomSize[0]}
+                                bondSize={bondSize[0]}
+                                opacity={opacity[0]}
+                                highContrast={highContrast}
+                                colorBlindMode={colorBlindMode}
+                                backgroundColor={backgroundColor}
+                              />
+                            )}
+                          </Canvas>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
                 </div>
-              </CardHeader>
-              <CardContent className="h-[calc(800px-120px)]">
-                <div className="h-full rounded-lg overflow-hidden">
-                  {file ? (
-                    <Canvas style={{ background: backgroundColor }}>
-                      <PerspectiveCamera makeDefault position={[5, 5, 5]} />
-                      <OrbitControls enablePan enableZoom enableRotate autoRotate={isAnimating} />
-                      <ambientLight intensity={0.6} />
-                      <directionalLight position={[10, 10, 5]} intensity={1} />
-                      <Environment preset="studio" />
-                      <MoleculeViewer
-                        colorScheme={colorScheme}
-                        visualizationMode={visualizationMode}
-                        atomSize={atomSize[0]}
-                        bondSize={bondSize[0]}
-                        opacity={opacity[0]}
-                        highContrast={highContrast}
-                        colorBlindMode={colorBlindMode}
-                        backgroundColor={backgroundColor}
+
+                {/* Controles Avançados (Segunda Linha) */}
+                <div className="flex flex-wrap items-center gap-6 mt-4 pt-4 border-t">
+                  <div className="flex items-center gap-2">
+                    <Label className="text-sm whitespace-nowrap">Tamanho Átomos:</Label>
+                    <div className="w-24">
+                      <Slider
+                        value={atomSize}
+                        onValueChange={setAtomSize}
+                        max={1}
+                        min={0.1}
+                        step={0.1}
+                        className="w-full"
                       />
-                    </Canvas>
-                  ) : (
-                    <div className="h-full flex items-center justify-center bg-muted/30 rounded-lg border-2 border-dashed border-muted-foreground/25">
-                      <div className="text-center">
-                        <Upload className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-                        <h3 className="text-lg font-semibold mb-2">Nenhum arquivo carregado</h3>
-                        <p className="text-muted-foreground">
-                          Faça upload de um arquivo molecular para começar a visualização
-                        </p>
-                      </div>
                     </div>
-                  )}
+                    <span className="text-xs text-muted-foreground w-8">{atomSize[0]}</span>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <Label className="text-sm whitespace-nowrap">Ligações:</Label>
+                    <div className="w-24">
+                      <Slider
+                        value={bondSize}
+                        onValueChange={setBondSize}
+                        max={0.3}
+                        min={0.05}
+                        step={0.05}
+                        className="w-full"
+                      />
+                    </div>
+                    <span className="text-xs text-muted-foreground w-8">{bondSize[0]}</span>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <Label className="text-sm whitespace-nowrap">Opacidade:</Label>
+                    <div className="w-24">
+                      <Slider
+                        value={opacity}
+                        onValueChange={setOpacity}
+                        max={1}
+                        min={0.1}
+                        step={0.1}
+                        className="w-full"
+                      />
+                    </div>
+                    <span className="text-xs text-muted-foreground w-8">{Math.round(opacity[0] * 100)}%</span>
+                  </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
+
+            {/* Área do Canvas 3D */}
+            <div className="h-full rounded-lg overflow-hidden">
+              {file ? (
+                <Canvas style={{ background: backgroundColor }}>
+                  <PerspectiveCamera makeDefault position={[5, 5, 5]} />
+                  <OrbitControls enablePan enableZoom enableRotate autoRotate={isAnimating} />
+                  <ambientLight intensity={0.6} />
+                  <directionalLight position={[10, 10, 5]} intensity={1} />
+                  <Environment preset="studio" />
+                  <MoleculeViewer
+                    colorScheme={colorScheme}
+                    visualizationMode={visualizationMode}
+                    atomSize={atomSize[0]}
+                    bondSize={bondSize[0]}
+                    opacity={opacity[0]}
+                    highContrast={highContrast}
+                    colorBlindMode={colorBlindMode}
+                    backgroundColor={backgroundColor}
+                  />
+                </Canvas>
+              ) : (
+                <div className="h-full flex items-center justify-center bg-muted/30 rounded-lg border-2 border-dashed border-muted-foreground/25">
+                  <div className="text-center">
+                    <Upload className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
+                    <h3 className="text-lg font-semibold mb-2">Nenhum arquivo carregado</h3>
+                    <p className="text-muted-foreground">
+                      Faça upload de um arquivo molecular para começar a visualização
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
 
             {/* Informações da Molécula */}
             {file && (
@@ -476,8 +449,6 @@ export const ImportarMolecula = () => {
                 </CardContent>
               </Card>
             )}
-          </div>
-        </div>
       </main>
       <Footer />
     </div>
