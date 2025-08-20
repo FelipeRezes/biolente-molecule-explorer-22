@@ -57,15 +57,15 @@ const Index = () => {
     );
   }
 
-  if (currentPage === "exportar") {
+  if (currentPage === "importar") {
     return (
       <>
         <Header currentPage={currentPage} onNavigate={handleNavigate} />
         <div className="min-h-screen">
           <iframe 
-            src="/exportar" 
+            src="/importar" 
             className="w-full h-screen border-0"
-            title="Exportar Molécula"
+            title="Importar Molécula"
           />
         </div>
         <Footer />
