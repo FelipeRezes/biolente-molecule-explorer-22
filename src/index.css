@@ -87,4 +87,8 @@ All colors MUST be HSL.
   body {
     @apply bg-background text-foreground;
   }
+
+  .high-contrast body {
+    @apply bg-black text-yellow-400;
+  }
 }
