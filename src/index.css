@@ -48,20 +48,34 @@ All colors MUST be HSL.
   }
 
   .high-contrast {
-    /* High contrast mode for accessibility */
-    --background: 0 0% 100%;
-    --foreground: 0 0% 0%;
-    --biolente-blue: 220 100% 25%;
-    --biolente-blue-dark: 220 100% 15%;
-    --biolente-yellow: 60 100% 40%;
-    --biolente-yellow-dark: 60 100% 25%;
-    --primary: 220 100% 15%;
-    --secondary: 220 100% 25%;
-    --accent: 60 100% 40%;
-    --border: 0 0% 20%;
-    --input: 0 0% 95%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 0%;
+    /* High contrast mode for accessibility - Black and Yellow */
+    --background: 0 0% 0%;
+    --foreground: 60 100% 50%;
+    --card: 0 0% 0%;
+    --card-foreground: 60 100% 50%;
+    --popover: 0 0% 0%;
+    --popover-foreground: 60 100% 50%;
+    --primary: 60 100% 50%;
+    --primary-foreground: 0 0% 0%;
+    --secondary: 0 0% 0%;
+    --secondary-foreground: 60 100% 50%;
+    --muted: 0 0% 10%;
+    --muted-foreground: 60 100% 50%;
+    --accent: 60 100% 50%;
+    --accent-foreground: 0 0% 0%;
+    --destructive: 0 100% 50%;
+    --destructive-foreground: 0 0% 0%;
+    --border: 60 100% 50%;
+    --input: 0 0% 0%;
+    --ring: 60 100% 50%;
+    --sidebar-background: 0 0% 0%;
+    --sidebar-foreground: 60 100% 50%;
+    --sidebar-primary: 60 100% 50%;
+    --sidebar-primary-foreground: 0 0% 0%;
+    --sidebar-accent: 0 0% 10%;
+    --sidebar-accent-foreground: 60 100% 50%;
+    --sidebar-border: 60 100% 50%;
+    --sidebar-ring: 60 100% 50%;
   }
 }
 
