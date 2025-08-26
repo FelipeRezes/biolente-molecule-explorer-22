@@ -1,4 +1,5 @@
 import { AccessibilitySection } from "@/components/AccessibilitySection";
+import { AccessibilityPanel } from "@/components/AccessibilityPanel";
 
 export const Acessibilidade = () => {
   return (
@@ -20,6 +21,7 @@ export const Acessibilidade = () => {
 
       {/* Accessibility Content */}
       <AccessibilitySection />
+      <AccessibilityPanel />
     </div>
   );
 };

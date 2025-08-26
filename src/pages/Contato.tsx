@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { AccessibilityPanel } from "@/components/AccessibilityPanel";
 import { Mail, Phone, MapPin, Clock, Send, MessageCircle, HelpCircle, Bug } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -308,6 +309,7 @@ export const Contato = () => {
           </div>
         </div>
       </div>
+      <AccessibilityPanel />
     </div>
   );
 };

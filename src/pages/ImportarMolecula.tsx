@@ -12,6 +12,7 @@ import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { AccessibilityPanel } from "@/components/AccessibilityPanel";
 import { Upload, Maximize2, RotateCcw, Download, Play, Pause } from "lucide-react";
 import { toast } from "sonner";
 import * as THREE from "three";
@@ -650,6 +651,7 @@ export const ImportarMolecula = () => {
             )}
       </main>
       <Footer />
+      <AccessibilityPanel />
     </div>
   );
 };

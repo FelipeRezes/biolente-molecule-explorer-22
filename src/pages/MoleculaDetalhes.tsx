@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { AccessibilityPanel } from "@/components/AccessibilityPanel";
 import { ArrowLeft, Download, Atom, RotateCcw, ZoomIn, ZoomOut, Move3D, Volume2, Maximize2 } from "lucide-react";
 
 interface Molecule {
@@ -482,6 +483,7 @@ export const MoleculaDetalhes = () => {
           </div>
         </div>
       </div>
+      <AccessibilityPanel />
     </div>
   );
 };

@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { AccessibilityPanel } from "@/components/AccessibilityPanel";
 import { Upload, Send, CheckCircle, AlertCircle, FileText } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -107,69 +108,72 @@ export const Contribuir = () => {
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-background">
-        <div className="bg-biolente-blue py-12">
-          <div className="max-w-7xl mx-auto px-6">
-            <div className="text-center">
-              <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-                Contribuição Enviada!
-              </h1>
+      <>
+        <div className="min-h-screen bg-background">
+          <div className="bg-biolente-blue py-12">
+            <div className="max-w-7xl mx-auto px-6">
+              <div className="text-center">
+                <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+                  Contribuição Enviada!
+                </h1>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="max-w-3xl mx-auto px-6 py-16">
-          <Card className="text-center">
-            <CardContent className="pt-8">
-              <div className="w-20 h-20 bg-biolente-green/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                <CheckCircle className="w-10 h-10 text-biolente-green-dark" />
-              </div>
-              
-              <h2 className="text-2xl font-bold text-foreground mb-4">
-                Obrigado pela sua contribuição!
-              </h2>
-              
-              <p className="text-muted-foreground mb-6 max-w-2xl">
-                Sua molécula <strong>{formData.nome}</strong> foi enviada com sucesso e será 
-                revisada pela nossa equipe científica. Você receberá uma confirmação por email 
-                quando a molécula for aprovada e adicionada ao catálogo.
-              </p>
-
-              <div className="bg-muted/50 rounded-lg p-6 mb-6 text-left max-w-md mx-auto">
-                <h3 className="font-semibold mb-3">Resumo da Contribuição:</h3>
-                <div className="space-y-2 text-sm">
-                  <div><strong>Nome:</strong> {formData.nome}</div>
-                  <div><strong>Fórmula:</strong> {formData.formula}</div>
-                  <div><strong>Tipo:</strong> {formData.tipo}</div>
-                  <div><strong>Arquivo:</strong> {uploadedFile?.name}</div>
+          <div className="max-w-3xl mx-auto px-6 py-16">
+            <Card className="text-center">
+              <CardContent className="pt-8">
+                <div className="w-20 h-20 bg-biolente-green/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <CheckCircle className="w-10 h-10 text-biolente-green-dark" />
                 </div>
-              </div>
-
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button onClick={() => {
-                  setSubmitted(false);
-                  setFormData({
-                    nome: "",
-                    formula: "",
-                    tipo: "",
-                    funcao: "",
-                    descricao: "",
-                    email: "",
-                    instituicao: ""
-                  });
-                  setUploadedFile(null);
-                }}>
-                  Contribuir com Outra Molécula
-                </Button>
                 
-                <Button variant="outline" onClick={() => window.location.href = '/'}>
-                  Voltar ao Início
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+                <h2 className="text-2xl font-bold text-foreground mb-4">
+                  Obrigado pela sua contribuição!
+                </h2>
+                
+                <p className="text-muted-foreground mb-6 max-w-2xl">
+                  Sua molécula <strong>{formData.nome}</strong> foi enviada com sucesso e será 
+                  revisada pela nossa equipe científica. Você receberá uma confirmação por email 
+                  quando a molécula for aprovada e adicionada ao catálogo.
+                </p>
+
+                <div className="bg-muted/50 rounded-lg p-6 mb-6 text-left max-w-md mx-auto">
+                  <h3 className="font-semibold mb-3">Resumo da Contribuição:</h3>
+                  <div className="space-y-2 text-sm">
+                    <div><strong>Nome:</strong> {formData.nome}</div>
+                    <div><strong>Fórmula:</strong> {formData.formula}</div>
+                    <div><strong>Tipo:</strong> {formData.tipo}</div>
+                    <div><strong>Arquivo:</strong> {uploadedFile?.name}</div>
+                  </div>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <Button onClick={() => {
+                    setSubmitted(false);
+                    setFormData({
+                      nome: "",
+                      formula: "",
+                      tipo: "",
+                      funcao: "",
+                      descricao: "",
+                      email: "",
+                      instituicao: ""
+                    });
+                    setUploadedFile(null);
+                  }}>
+                    Contribuir com Outra Molécula
+                  </Button>
+                  
+                  <Button variant="outline" onClick={() => window.location.href = '/'}>
+                    Voltar ao Início
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </div>
-      </div>
+        <AccessibilityPanel />
+      </>
     );
   }
 
@@ -408,6 +412,7 @@ export const Contribuir = () => {
           </CardContent>
         </Card>
       </div>
+      <AccessibilityPanel />
     </div>
   );
 };

@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { AccessibilityPanel } from "@/components/AccessibilityPanel";
 import { Upload, FileText, RotateCcw, ZoomIn, ZoomOut, Download, AlertCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -293,6 +294,7 @@ export const Visualizar = () => {
           </div>
         </div>
       </div>
+      <AccessibilityPanel />
     </div>
   );
 };
