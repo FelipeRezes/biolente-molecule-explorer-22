@@ -111,6 +111,8 @@ const MoleculeViewer = ({
 
 export const ImportarMolecula = () => {
   const [file, setFile] = useState<File | null>(null);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [isImage, setIsImage] = useState(false);
   const [visualizationMode, setVisualizationMode] = useState("ballstick");
   const [colorScheme, setColorScheme] = useState("cpk");
   const [backgroundColor, setBackgroundColor] = useState("#ffffff");
@@ -125,12 +127,21 @@ export const ImportarMolecula = () => {
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const uploadedFile = event.target.files?.[0];
     if (uploadedFile) {
-      const validFormats = ['.pdb', '.sdf', '.mol', '.xyz', '.cif'];
+      const moleculeFormats = ['.pdb', '.sdf', '.mol', '.xyz', '.cif'];
+      const imageFormats = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp', '.svg'];
       const fileExtension = uploadedFile.name.toLowerCase().slice(uploadedFile.name.lastIndexOf('.'));
       
-      if (validFormats.includes(fileExtension)) {
+      if (moleculeFormats.includes(fileExtension)) {
         setFile(uploadedFile);
-        toast.success(`Arquivo ${uploadedFile.name} carregado com sucesso!`);
+        setIsImage(false);
+        setImageUrl(null);
+        toast.success(`Arquivo molecular ${uploadedFile.name} carregado com sucesso!`);
+      } else if (imageFormats.includes(fileExtension)) {
+        const url = URL.createObjectURL(uploadedFile);
+        setFile(uploadedFile);
+        setImageUrl(url);
+        setIsImage(true);
+        toast.success(`Imagem ${uploadedFile.name} carregada com sucesso!`);
       } else {
         toast.error("Formato de arquivo não suportado!");
       }
@@ -146,6 +157,12 @@ export const ImportarMolecula = () => {
     setOpacity([1]);
     setHighContrast(false);
     setColorBlindMode("none");
+    setFile(null);
+    setIsImage(false);
+    if (imageUrl) {
+      URL.revokeObjectURL(imageUrl);
+      setImageUrl(null);
+    }
     toast.success("Configurações resetadas!");
   };
 
@@ -163,10 +180,10 @@ export const ImportarMolecula = () => {
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-foreground mb-4">
-            Importar e Visualizar Moléculas
+            Importar e Visualizar Conteúdo
           </h1>
           <p className="text-xl text-muted-foreground">
-            Carregue arquivos moleculares e personalize a visualização 3D com controles avançados
+            Carregue arquivos moleculares para visualização 3D ou imagens para exibição personalizada
           </p>
         </div>
 
@@ -178,14 +195,14 @@ export const ImportarMolecula = () => {
               Importar Arquivo
             </CardTitle>
             <CardDescription>
-              Formatos suportados: PDB, SDF, MOL, XYZ, CIF
+              Formatos suportados: PDB, SDF, MOL, XYZ, CIF (moléculas) | JPG, PNG, GIF, WEBP, SVG (imagens)
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-4">
               <Input
                 type="file"
-                accept=".pdb,.sdf,.mol,.xyz,.cif"
+                accept=".pdb,.sdf,.mol,.xyz,.cif,.jpg,.jpeg,.png,.gif,.bmp,.webp,.svg"
                 onChange={handleFileUpload}
                 className="cursor-pointer flex-1"
               />
@@ -444,25 +461,41 @@ export const ImportarMolecula = () => {
                             </div>
                           </div>
 
-                          <Canvas style={{ background: backgroundColor }}>
-                            <PerspectiveCamera makeDefault position={[5, 5, 5]} />
-                            <OrbitControls enablePan enableZoom enableRotate autoRotate={isAnimating} />
-                            <ambientLight intensity={0.6} />
-                            <directionalLight position={[10, 10, 5]} intensity={1} />
-                            <Environment preset="studio" />
-                            {file && (
-                              <MoleculeViewer
-                                colorScheme={colorScheme}
-                                visualizationMode={visualizationMode}
-                                atomSize={atomSize[0]}
-                                bondSize={bondSize[0]}
-                                opacity={opacity[0]}
-                                highContrast={highContrast}
-                                colorBlindMode={colorBlindMode}
-                                backgroundColor={backgroundColor}
+                          {isImage && imageUrl ? (
+                            <div 
+                              className="w-full h-full flex items-center justify-center overflow-hidden"
+                              style={{ backgroundColor: backgroundColor }}
+                            >
+                              <img 
+                                src={imageUrl} 
+                                alt="Imagem carregada" 
+                                className="max-w-full max-h-full object-contain"
+                                style={{
+                                  filter: highContrast ? 'contrast(200%) brightness(120%)' : 'none'
+                                }}
                               />
-                            )}
-                          </Canvas>
+                            </div>
+                          ) : (
+                            <Canvas style={{ background: backgroundColor }}>
+                              <PerspectiveCamera makeDefault position={[5, 5, 5]} />
+                              <OrbitControls enablePan enableZoom enableRotate autoRotate={isAnimating} />
+                              <ambientLight intensity={0.6} />
+                              <directionalLight position={[10, 10, 5]} intensity={1} />
+                              <Environment preset="studio" />
+                              {file && (
+                                <MoleculeViewer
+                                  colorScheme={colorScheme}
+                                  visualizationMode={visualizationMode}
+                                  atomSize={atomSize[0]}
+                                  bondSize={bondSize[0]}
+                                  opacity={opacity[0]}
+                                  highContrast={highContrast}
+                                  colorBlindMode={colorBlindMode}
+                                  backgroundColor={backgroundColor}
+                                />
+                              )}
+                            </Canvas>
+                          )}
                         </div>
                       </DialogContent>
                     </Dialog>
@@ -519,33 +552,49 @@ export const ImportarMolecula = () => {
               </div>
             </div>
 
-            {/* Área do Canvas 3D */}
+            {/* Área do Canvas 3D ou Imagem */}
             <div className="h-full rounded-lg overflow-hidden">
               {file ? (
-                <Canvas style={{ background: backgroundColor }}>
-                  <PerspectiveCamera makeDefault position={[5, 5, 5]} />
-                  <OrbitControls enablePan enableZoom enableRotate autoRotate={isAnimating} />
-                  <ambientLight intensity={0.6} />
-                  <directionalLight position={[10, 10, 5]} intensity={1} />
-                  <Environment preset="studio" />
-                  <MoleculeViewer
-                    colorScheme={colorScheme}
-                    visualizationMode={visualizationMode}
-                    atomSize={atomSize[0]}
-                    bondSize={bondSize[0]}
-                    opacity={opacity[0]}
-                    highContrast={highContrast}
-                    colorBlindMode={colorBlindMode}
-                    backgroundColor={backgroundColor}
-                  />
-                </Canvas>
+                isImage && imageUrl ? (
+                  <div 
+                    className="w-full h-full flex items-center justify-center overflow-hidden"
+                    style={{ backgroundColor: backgroundColor }}
+                  >
+                    <img 
+                      src={imageUrl} 
+                      alt="Imagem carregada" 
+                      className="max-w-full max-h-full object-contain"
+                      style={{
+                        filter: highContrast ? 'contrast(200%) brightness(120%)' : 'none'
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <Canvas style={{ background: backgroundColor }}>
+                    <PerspectiveCamera makeDefault position={[5, 5, 5]} />
+                    <OrbitControls enablePan enableZoom enableRotate autoRotate={isAnimating} />
+                    <ambientLight intensity={0.6} />
+                    <directionalLight position={[10, 10, 5]} intensity={1} />
+                    <Environment preset="studio" />
+                    <MoleculeViewer
+                      colorScheme={colorScheme}
+                      visualizationMode={visualizationMode}
+                      atomSize={atomSize[0]}
+                      bondSize={bondSize[0]}
+                      opacity={opacity[0]}
+                      highContrast={highContrast}
+                      colorBlindMode={colorBlindMode}
+                      backgroundColor={backgroundColor}
+                    />
+                  </Canvas>
+                )
               ) : (
                 <div className="h-full flex items-center justify-center bg-muted/30 rounded-lg border-2 border-dashed border-muted-foreground/25">
                   <div className="text-center">
                     <Upload className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
                     <h3 className="text-lg font-semibold mb-2">Nenhum arquivo carregado</h3>
                     <p className="text-muted-foreground">
-                      Faça upload de um arquivo molecular para começar a visualização
+                      Faça upload de um arquivo molecular ou imagem para começar a visualização
                     </p>
                   </div>
                 </div>
@@ -554,37 +603,48 @@ export const ImportarMolecula = () => {
           </CardContent>
         </Card>
 
-            {/* Informações da Molécula */}
+            {/* Informações do Arquivo */}
             {file && (
               <Card className="mt-6">
                 <CardHeader>
-                  <CardTitle>Informações da Molécula</CardTitle>
+                  <CardTitle>Informações do Arquivo</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div className="text-center">
-                      <Badge variant="secondary">Átomos</Badge>
-                      <p className="text-2xl font-bold mt-1">42</p>
+                  {isImage ? (
+                    <div className="space-y-2">
+                      <p><strong>Tipo:</strong> Imagem</p>
+                      <p><strong>Arquivo:</strong> {file.name}</p>
+                      <p><strong>Tamanho:</strong> {(file.size / 1024).toFixed(2)} KB</p>
+                      <p><strong>Formato:</strong> {file.type || 'Imagem'}</p>
                     </div>
-                    <div className="text-center">
-                      <Badge variant="secondary">Ligações</Badge>
-                      <p className="text-2xl font-bold mt-1">48</p>
-                    </div>
-                    <div className="text-center">
-                      <Badge variant="secondary">Massa Mol.</Badge>
-                      <p className="text-2xl font-bold mt-1">180.16</p>
-                    </div>
-                    <div className="text-center">
-                      <Badge variant="secondary">Fórmula</Badge>
-                      <p className="text-2xl font-bold mt-1">C₆H₁₂O₆</p>
-                    </div>
-                  </div>
-                  <Separator className="my-4" />
-                  <div className="space-y-2">
-                    <p><strong>Nome:</strong> Glicose</p>
-                    <p><strong>Arquivo:</strong> {file.name}</p>
-                    <p><strong>Tamanho:</strong> {(file.size / 1024).toFixed(2)} KB</p>
-                  </div>
+                  ) : (
+                    <>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div className="text-center">
+                          <Badge variant="secondary">Átomos</Badge>
+                          <p className="text-2xl font-bold mt-1">42</p>
+                        </div>
+                        <div className="text-center">
+                          <Badge variant="secondary">Ligações</Badge>
+                          <p className="text-2xl font-bold mt-1">48</p>
+                        </div>
+                        <div className="text-center">
+                          <Badge variant="secondary">Massa Mol.</Badge>
+                          <p className="text-2xl font-bold mt-1">180.16</p>
+                        </div>
+                        <div className="text-center">
+                          <Badge variant="secondary">Fórmula</Badge>
+                          <p className="text-2xl font-bold mt-1">C₆H₁₂O₆</p>
+                        </div>
+                      </div>
+                      <Separator className="my-4" />
+                      <div className="space-y-2">
+                        <p><strong>Nome:</strong> Glicose</p>
+                        <p><strong>Arquivo:</strong> {file.name}</p>
+                        <p><strong>Tamanho:</strong> {(file.size / 1024).toFixed(2)} KB</p>
+                      </div>
+                    </>
+                  )}
                 </CardContent>
               </Card>
             )}
