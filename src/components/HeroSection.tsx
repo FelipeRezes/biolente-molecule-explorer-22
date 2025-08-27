@@ -3,10 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
 import { useState } from "react";
 import moleculeHero from "@/assets/molecule-hero.png";
-
 export const HeroSection = () => {
   const [searchQuery, setSearchQuery] = useState("");
-
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
@@ -14,9 +12,7 @@ export const HeroSection = () => {
       console.log("Searching for:", searchQuery);
     }
   };
-
-  return (
-    <section className="min-h-screen relative overflow-hidden bg-gradient-to-br from-slate-50 to-slate-100">
+  return <section className="min-h-screen relative overflow-hidden bg-gradient-to-br from-slate-50 to-slate-100">
       {/* Simple Background Effects */}
       <div className="absolute top-20 left-20 w-72 h-72 bg-blue-100 rounded-full blur-3xl opacity-50"></div>
       <div className="absolute bottom-20 right-20 w-96 h-96 bg-green-100 rounded-full blur-3xl opacity-50"></div>
@@ -27,7 +23,7 @@ export const HeroSection = () => {
         <div className="space-y-10 z-10">
           <div className="space-y-6">
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-foreground leading-tight">
-              <span className="text-blue-600">
+              <span className="text-zinc-950">
                 Encontre
               </span>{" "}
               moléculas em{" "}
@@ -46,21 +42,11 @@ export const HeroSection = () => {
           {/* Search Form */}
           <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-4 max-w-2xl">
             <div className="relative flex-1">
-              <Input
-                type="text"
-                placeholder="Pesquisar moléculas..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-14 h-16 text-xl border-2 rounded-xl"
-                aria-label="Campo de busca de moléculas"
-              />
+              <Input type="text" placeholder="Pesquisar moléculas..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="pl-14 h-16 text-xl border-2 rounded-xl" aria-label="Campo de busca de moléculas" />
               <Search className="absolute left-5 top-1/2 transform -translate-y-1/2 w-6 h-6 text-primary" />
             </div>
             
-            <Button 
-              type="submit"
-              className="h-16 px-10 font-bold text-lg rounded-xl"
-            >
+            <Button type="submit" className="h-16 px-10 font-bold text-lg rounded-xl">
               <Search className="w-6 h-6 mr-3" />
               Buscar
             </Button>
@@ -72,16 +58,11 @@ export const HeroSection = () => {
           <div className="relative group">
             <div className="w-96 h-96 lg:w-[32rem] lg:h-[32rem] relative">
               <div className="relative w-full h-full bg-white/50 backdrop-blur-sm rounded-3xl border border-border shadow-lg flex items-center justify-center">
-                <img 
-                  src={moleculeHero}
-                  alt="Ilustração 3D de uma molécula com esferas azuis e verdes conectadas"
-                  className="w-80 h-80 lg:w-96 lg:h-96 object-contain"
-                />
+                <img src={moleculeHero} alt="Ilustração 3D de uma molécula com esferas azuis e verdes conectadas" className="w-80 h-80 lg:w-96 lg:h-96 object-contain" />
               </div>
             </div>
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
