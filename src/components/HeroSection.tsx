@@ -27,7 +27,7 @@ export const HeroSection = () => {
                 Encontre
               </span>{" "}
               moléculas em{" "}
-              <span className="text-green-600">
+              <span className="text-zinc-950">
                 segundos.
               </span>
             </h1>
