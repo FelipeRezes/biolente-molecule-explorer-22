@@ -42,20 +42,48 @@ const MoleculeViewer = ({
   // Cores baseadas no esquema selecionado
   const getAtomColor = (element: string) => {
     if (highContrast) {
-      return element === 'C' ? '#FFFFFF' : '#000000';
+      // Cores de alto contraste acessíveis
+      switch (element) {
+        case 'C':
+          return '#FFFFFF';  // Carbono branco
+        case 'O':
+          return '#0072B2';  // Oxigênio azul
+        case 'H':
+          return '#F0E442';  // Hidrogênio amarelo
+        case 'N':
+          return '#E69F00';  // Nitrogênio laranja
+        case 'S':
+          return '#CC79A7';  // Enxofre rosa
+        case 'P':
+          return '#009E73';  // Fósforo verde
+        default:
+          return '#56B4E9';  // Outros azul claro
+      }
     }
     
     if (colorBlindMode === 'protanopia') {
-      return element === 'C' ? '#FFD700' : '#0000FF';
+      return element === 'C' ? '#0072B2' : '#F0E442';
     }
     
     if (colorBlindMode === 'deuteranopia') {
-      return element === 'C' ? '#FF6347' : '#4169E1';
+      return element === 'C' ? '#0072B2' : '#E69F00';
+    }
+    
+    if (colorBlindMode === 'tritanopia') {
+      return element === 'C' ? '#E69F00' : '#56B4E9';
     }
 
     switch (colorScheme) {
       case 'cpk':
-        return element === 'C' ? '#909090' : '#FF1493';
+        switch (element) {
+          case 'C': return '#808080';
+          case 'H': return '#FFFFFF';
+          case 'O': return '#FF0000';
+          case 'N': return '#0000FF';
+          case 'S': return '#FFFF00';
+          case 'P': return '#FFA500';
+          default: return '#00FF00';
+        }
       case 'element':
         return element === 'C' ? '#404040' : '#FF0000';
       case 'rainbow':
@@ -477,7 +505,7 @@ export const ImportarMolecula = () => {
                               />
                             </div>
                           ) : (
-                            <Canvas style={{ background: backgroundColor }}>
+                            <Canvas style={{ background: highContrast ? '#000000' : backgroundColor }}>
                               <PerspectiveCamera makeDefault position={[5, 5, 5]} />
                               <OrbitControls enablePan enableZoom enableRotate autoRotate={isAnimating} />
                               <ambientLight intensity={0.6} />
@@ -571,7 +599,7 @@ export const ImportarMolecula = () => {
                     />
                   </div>
                 ) : (
-                  <Canvas style={{ background: backgroundColor }}>
+                  <Canvas style={{ background: highContrast ? '#000000' : backgroundColor }}>
                     <PerspectiveCamera makeDefault position={[5, 5, 5]} />
                     <OrbitControls enablePan enableZoom enableRotate autoRotate={isAnimating} />
                     <ambientLight intensity={0.6} />
