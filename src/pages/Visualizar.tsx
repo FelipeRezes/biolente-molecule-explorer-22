@@ -4,12 +4,14 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { AccessibilityPanel } from "@/components/AccessibilityPanel";
 import { MoleculeColorControls } from "@/components/MoleculeColorControls";
-import { Upload, FileText, RotateCcw, ZoomIn, ZoomOut, Download, AlertCircle } from "lucide-react";
+import { MoleculeViewer3D } from "@/components/MoleculeViewer3D";
+import { Upload, FileText, RotateCcw, AlertCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useMoleculeColorPalettes } from "@/hooks/useMoleculeColorPalettes";
 
 export const Visualizar = () => {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [fileContent, setFileContent] = useState<string>("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [moleculeData, setMoleculeData] = useState<any>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -39,25 +41,52 @@ export const Visualizar = () => {
       return;
     }
 
+    // Check file size (max 10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      toast({
+        title: "Arquivo muito grande",
+        description: "O arquivo deve ter no máximo 10MB",
+        variant: "destructive"
+      });
+      return;
+    }
+
     setUploadedFile(file);
     setIsProcessing(true);
 
-    // Simulate file processing
-    setTimeout(() => {
-      setMoleculeData({
-        name: file.name.replace(/\.[^/.]+$/, ""),
-        format: fileExt?.toUpperCase(),
-        atoms: Math.floor(Math.random() * 500) + 50,
-        bonds: Math.floor(Math.random() * 800) + 100,
-        molecularWeight: (Math.random() * 1000 + 100).toFixed(2)
-      });
+    // Read file content
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const content = e.target?.result as string;
+        setFileContent(content);
+        setIsProcessing(false);
+        
+        toast({
+          title: "Arquivo carregado com sucesso!",
+          description: "Sua molécula está pronta para visualização 3D.",
+        });
+      } catch (error) {
+        console.error('Error reading file:', error);
+        setIsProcessing(false);
+        toast({
+          title: "Erro ao ler arquivo",
+          description: "Não foi possível processar o arquivo. Verifique se está no formato correto.",
+          variant: "destructive"
+        });
+      }
+    };
+
+    reader.onerror = () => {
       setIsProcessing(false);
-      
       toast({
-        title: "Arquivo carregado com sucesso!",
-        description: "Sua molécula está pronta para visualização 3D.",
+        title: "Erro ao ler arquivo",
+        description: "Ocorreu um erro ao ler o arquivo.",
+        variant: "destructive"
       });
-    }, 2000);
+    };
+
+    reader.readAsText(file);
   };
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -77,10 +106,19 @@ export const Visualizar = () => {
 
   const resetVisualization = () => {
     setUploadedFile(null);
+    setFileContent("");
     setMoleculeData(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
+  };
+
+  const handleMoleculeAnalysis = (analysis: any) => {
+    setMoleculeData({
+      name: uploadedFile?.name.replace(/\.[^/.]+$/, "") || "Molécula",
+      format: uploadedFile?.name.toLowerCase().split('.').pop()?.toUpperCase() || "UNKNOWN",
+      ...analysis
+    });
   };
 
   const currentScheme = getCurrentScheme();
@@ -215,7 +253,7 @@ export const Visualizar = () => {
 
           {/* Visualization Section */}
           <div className="lg:col-span-2">
-            {!moleculeData ? (
+            {!fileContent ? (
               /* Instructions */
               <Card className="h-full">
                 <CardContent className="flex items-center justify-center h-96">
@@ -228,7 +266,7 @@ export const Visualizar = () => {
                     </h3>
                     <p className="text-muted-foreground">
                       Carregue um arquivo de molécula para começar a visualização 3D. 
-                      Você poderá girar, ampliar e inspecionar a estrutura molecular.
+                      Suportamos arquivos PDB, SDF, MOL e XYZ para visualização completa.
                     </p>
                   </div>
                 </CardContent>
@@ -237,80 +275,47 @@ export const Visualizar = () => {
               /* 3D Viewer */
               <div className="space-y-6">
                 {/* Molecule Info */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle>{moleculeData.name}</CardTitle>
-                    <CardDescription>
-                      Formato: {moleculeData.format} • {moleculeData.atoms} átomos • {moleculeData.bonds} ligações
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex flex-wrap gap-2">
-                      <Badge variant="secondary">
-                        Peso Molecular: {moleculeData.molecularWeight} Da
-                      </Badge>
-                      <Badge variant="outline">
-                        {moleculeData.atoms} Átomos
-                      </Badge>
-                      <Badge variant="outline">
-                        {moleculeData.bonds} Ligações
-                      </Badge>
-                    </div>
-                  </CardContent>
-                </Card>
+                {moleculeData && (
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>{moleculeData.name}</CardTitle>
+                      <CardDescription>
+                        Formato: {moleculeData.format} • {moleculeData.atoms} átomos • {moleculeData.bonds} ligações
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex flex-wrap gap-2">
+                        <Badge variant="secondary">
+                          Peso Molecular: {moleculeData.molecularWeight} Da
+                        </Badge>
+                        <Badge variant="outline">
+                          {moleculeData.atoms} Átomos
+                        </Badge>
+                        <Badge variant="outline">
+                          {moleculeData.bonds} Ligações
+                        </Badge>
+                        {moleculeData.elements && (
+                          <Badge variant="outline">
+                            Elementos: {moleculeData.elements.join(', ')}
+                          </Badge>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
 
                 {/* 3D Viewer */}
                 <Card>
                   <CardHeader>
-                    <div className="flex items-center justify-between">
-                      <CardTitle className="text-lg">Visualização 3D</CardTitle>
-                      <div className="flex items-center space-x-2">
-                        <Button variant="outline" size="sm">
-                          <ZoomOut className="w-4 h-4" />
-                        </Button>
-                        <Button variant="outline" size="sm">
-                          <RotateCcw className="w-4 h-4" />
-                        </Button>
-                        <Button variant="outline" size="sm">
-                          <ZoomIn className="w-4 h-4" />
-                        </Button>
-                        <Button variant="outline" size="sm">
-                          <Download className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </div>
+                    <CardTitle className="text-lg">Visualização 3D</CardTitle>
                   </CardHeader>
                   
                   <CardContent>
-                    <div 
-                      className="molecule-viewer bg-gradient-to-br from-muted/50 to-muted/20 rounded-lg h-96 flex items-center justify-center border"
-                    >
-                      <div className="text-center space-y-4">
-                        <div 
-                          className="w-24 h-24 rounded-full flex items-center justify-center mx-auto"
-                          style={{ backgroundColor: isHighContrast ? currentScheme.carbon + '33' : undefined }}
-                        >
-                          <div 
-                            className="w-16 h-16 rounded-full flex items-center justify-center"
-                            style={{ backgroundColor: isHighContrast ? currentScheme.carbon + '66' : undefined }}
-                          >
-                            <div 
-                              className="w-8 h-8 rounded-full animate-pulse"
-                              style={{ backgroundColor: isHighContrast ? currentScheme.carbon : undefined }}
-                            ></div>
-                          </div>
-                        </div>
-                        <div>
-                          <h4 className="font-semibold text-foreground mb-2">
-                            Visualizador 3D Ativo
-                          </h4>
-                          <p className="text-sm text-muted-foreground">
-                            Use o mouse para girar, o scroll para ampliar.<br/>
-                            Clique nos átomos para mais informações.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
+                    <MoleculeViewer3D
+                      fileContent={fileContent}
+                      fileFormat={uploadedFile?.name.toLowerCase().split('.').pop() || 'pdb'}
+                      onAnalysis={handleMoleculeAnalysis}
+                    />
                   </CardContent>
                 </Card>
               </div>
