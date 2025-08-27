@@ -160,8 +160,13 @@ All colors MUST be HSL.
 
   /* Molecule viewer styles */
   .molecule-viewer {
-    background-color: hsl(var(--molecule-bg));
+    background-color: hsl(var(--molecule-bg)) !important;
     transition: all 0.3s ease;
+  }
+
+  /* High contrast molecule viewer */
+  .high-contrast .molecule-viewer {
+    background-color: #000000 !important;
   }
 
   /* Atom color classes */

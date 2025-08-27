@@ -283,11 +283,7 @@ export const Visualizar = () => {
                   
                   <CardContent>
                     <div 
-                      className="bg-gradient-to-br from-muted/50 to-muted/20 rounded-lg h-96 flex items-center justify-center border"
-                      style={{
-                        backgroundColor: isHighContrast ? currentScheme.background : undefined,
-                        borderColor: isHighContrast ? currentScheme.carbon : undefined
-                      }}
+                      className="molecule-viewer bg-gradient-to-br from-muted/50 to-muted/20 rounded-lg h-96 flex items-center justify-center border"
                     >
                       <div className="text-center space-y-4">
                         <div 
