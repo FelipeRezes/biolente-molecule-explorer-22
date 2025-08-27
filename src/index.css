@@ -131,4 +131,46 @@ All colors MUST be HSL.
   .high-contrast .text-card-foreground {
     color: yellow !important;
   }
+
+  /* Molecule visualization variables */
+  :root {
+    --molecule-bg: 0 0% 97%;
+    --molecule-carbon: 0 0% 50%;
+    --molecule-hydrogen: 0 0% 100%;
+    --molecule-oxygen: 0 100% 50%;
+    --molecule-nitrogen: 240 100% 50%;
+    --molecule-sulfur: 60 100% 50%;
+    --molecule-phosphorus: 39 100% 50%;
+    --molecule-halogen: 120 100% 50%;
+    --molecule-other: 330 100% 71%;
+  }
+
+  /* High contrast molecule colors */
+  .high-contrast {
+    --molecule-bg: 0 0% 0%;
+    --molecule-carbon: 0 0% 100%;
+    --molecule-hydrogen: 42 100% 70%;
+    --molecule-oxygen: 207 91% 54%;
+    --molecule-nitrogen: 39 100% 50%;
+    --molecule-sulfur: 310 60% 72%;
+    --molecule-phosphorus: 174 100% 29%;
+    --molecule-halogen: 28 100% 53%;
+    --molecule-other: 204 70% 53%;
+  }
+
+  /* Molecule viewer styles */
+  .molecule-viewer {
+    background-color: hsl(var(--molecule-bg));
+    transition: all 0.3s ease;
+  }
+
+  /* Atom color classes */
+  .atom-carbon { color: hsl(var(--molecule-carbon)); }
+  .atom-hydrogen { color: hsl(var(--molecule-hydrogen)); }
+  .atom-oxygen { color: hsl(var(--molecule-oxygen)); }
+  .atom-nitrogen { color: hsl(var(--molecule-nitrogen)); }
+  .atom-sulfur { color: hsl(var(--molecule-sulfur)); }
+  .atom-phosphorus { color: hsl(var(--molecule-phosphorus)); }
+  .atom-halogen { color: hsl(var(--molecule-halogen)); }
+  .atom-other { color: hsl(var(--molecule-other)); }
 }

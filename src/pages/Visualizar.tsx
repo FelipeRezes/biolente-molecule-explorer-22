@@ -3,8 +3,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { AccessibilityPanel } from "@/components/AccessibilityPanel";
+import { MoleculeColorControls } from "@/components/MoleculeColorControls";
 import { Upload, FileText, RotateCcw, ZoomIn, ZoomOut, Download, AlertCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useMoleculeColorPalettes } from "@/hooks/useMoleculeColorPalettes";
 
 export const Visualizar = () => {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
@@ -12,6 +14,7 @@ export const Visualizar = () => {
   const [moleculeData, setMoleculeData] = useState<any>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
+  const { getCurrentScheme, isHighContrast } = useMoleculeColorPalettes();
 
   const supportedFormats = [
     { ext: ".pdb", desc: "Protein Data Bank" },
@@ -80,8 +83,15 @@ export const Visualizar = () => {
     }
   };
 
+  const currentScheme = getCurrentScheme();
+
   return (
-    <div className="min-h-screen bg-background">
+    <div 
+      className="min-h-screen bg-background"
+      style={{
+        backgroundColor: isHighContrast ? currentScheme.background : undefined
+      }}
+    >
       {/* Header */}
       <div className="bg-biolente-blue py-12">
         <div className="max-w-7xl mx-auto px-6">
@@ -101,7 +111,7 @@ export const Visualizar = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           
           {/* Upload Section */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1 space-y-6">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
@@ -198,6 +208,9 @@ export const Visualizar = () => {
                 )}
               </CardContent>
             </Card>
+
+            {/* Color Controls */}
+            <MoleculeColorControls />
           </div>
 
           {/* Visualization Section */}
@@ -269,11 +282,26 @@ export const Visualizar = () => {
                   </CardHeader>
                   
                   <CardContent>
-                    <div className="bg-gradient-to-br from-muted/50 to-muted/20 rounded-lg h-96 flex items-center justify-center border">
+                    <div 
+                      className="bg-gradient-to-br from-muted/50 to-muted/20 rounded-lg h-96 flex items-center justify-center border"
+                      style={{
+                        backgroundColor: isHighContrast ? currentScheme.background : undefined,
+                        borderColor: isHighContrast ? currentScheme.carbon : undefined
+                      }}
+                    >
                       <div className="text-center space-y-4">
-                        <div className="w-24 h-24 bg-biolente-green/20 rounded-full flex items-center justify-center mx-auto">
-                          <div className="w-16 h-16 bg-biolente-green/40 rounded-full flex items-center justify-center">
-                            <div className="w-8 h-8 bg-biolente-green rounded-full animate-pulse"></div>
+                        <div 
+                          className="w-24 h-24 rounded-full flex items-center justify-center mx-auto"
+                          style={{ backgroundColor: isHighContrast ? currentScheme.carbon + '33' : undefined }}
+                        >
+                          <div 
+                            className="w-16 h-16 rounded-full flex items-center justify-center"
+                            style={{ backgroundColor: isHighContrast ? currentScheme.carbon + '66' : undefined }}
+                          >
+                            <div 
+                              className="w-8 h-8 rounded-full animate-pulse"
+                              style={{ backgroundColor: isHighContrast ? currentScheme.carbon : undefined }}
+                            ></div>
                           </div>
                         </div>
                         <div>
