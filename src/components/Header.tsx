@@ -51,6 +51,7 @@ export const Header = ({ currentPage = "home", onNavigate }: HeaderProps) => {
   const menuItems = [
     { id: 'home', label: 'HOME' },
     { id: 'explorar', label: 'EXPLORAR' },
+    { id: 'plano-aulas', label: 'PLANO DE AULAS' },
     { id: 'importar', label: 'IMPORTAR' },
     { id: 'contato', label: 'CONTATO' },
     { id: 'contribua', label: 'CONTRIBUA' },
