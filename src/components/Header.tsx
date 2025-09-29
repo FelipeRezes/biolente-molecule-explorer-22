@@ -1,13 +1,15 @@
 import { Button } from "@/components/ui/button";
 import { Search, Eye, Volume2 } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 interface HeaderProps {
   currentPage?: string;
-  onNavigate?: (page: string) => void;
 }
 
-export const Header = ({ currentPage = "home", onNavigate }: HeaderProps) => {
+export const Header = ({ currentPage }: HeaderProps) => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [isHighContrast, setIsHighContrast] = useState(false);
   const [isAudioMode, setIsAudioMode] = useState(false);
 
@@ -49,13 +51,19 @@ export const Header = ({ currentPage = "home", onNavigate }: HeaderProps) => {
   };
 
   const menuItems = [
-    { id: 'home', label: 'HOME' },
-    { id: 'explorar', label: 'EXPLORAR' },
-    { id: 'plano-aulas', label: 'PLANO DE AULAS' },
-    { id: 'importar', label: 'IMPORTAR' },
-    { id: 'contato', label: 'CONTATO' },
-    { id: 'contribua', label: 'CONTRIBUA' },
+    { id: 'home', label: 'HOME', path: '/' },
+    { id: 'explorar', label: 'EXPLORAR', path: '/explorar' },
+    { id: 'plano-aulas', label: 'PLANO DE AULAS', path: '/plano-aulas' },
+    { id: 'importar', label: 'IMPORTAR', path: '/importar' },
+    { id: 'contato', label: 'CONTATO', path: '/contato' },
+    { id: 'contribua', label: 'CONTRIBUA', path: '/contribuir' },
   ];
+
+  const getCurrentPage = () => {
+    const path = location.pathname;
+    const found = menuItems.find(item => item.path === path);
+    return found ? found.id : 'home';
+  };
 
   return (
     <header className="w-full bg-biolente-blue shadow-sm">
@@ -104,18 +112,18 @@ export const Header = ({ currentPage = "home", onNavigate }: HeaderProps) => {
             {menuItems.map((item) => (
               <button
                 key={item.id}
-                onClick={() => onNavigate?.(item.id)}
+                onClick={() => navigate(item.path)}
                 className={`text-foreground hover:text-biolente-blue-dark font-medium transition-colors ${
-                  currentPage === item.id ? 'text-biolente-blue-dark font-bold' : ''
+                  getCurrentPage() === item.id ? 'text-biolente-blue-dark font-bold' : ''
                 }`}
-                aria-current={currentPage === item.id ? 'page' : undefined}
+                aria-current={getCurrentPage() === item.id ? 'page' : undefined}
               >
                 {item.label}
               </button>
             ))}
             
             <Button
-              onClick={() => onNavigate?.('acessibilidade')}
+              onClick={() => navigate('/acessibilidade')}
               className="bg-biolente-yellow hover:bg-biolente-yellow-dark text-foreground font-bold px-4 py-2 rounded-md"
             >
               ACESSIBILIDADE
